@@ -11,7 +11,6 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    // ─── INDEX: Daftar semua kategori ──────────────────────────────
     public function index(): Response
     {
         $categories = Category::orderBy('sort_order')
@@ -23,13 +22,11 @@ class CategoryController extends Controller
         ]);
     }
 
-    // ─── CREATE: Tampilkan form tambah ──────────────────────────────
     public function create(): Response
     {
         return Inertia::render('Admin/Categories/Create');
     }
 
-    // ─── STORE: Simpan kategori baru ────────────────────────────────
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -40,7 +37,6 @@ class CategoryController extends Controller
             'sort_order'  => 'nullable|integer|min:0',
         ]);
 
-        // slug otomatis dari booted()
         Category::create($validated);
 
         return redirect()
@@ -48,7 +44,6 @@ class CategoryController extends Controller
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    // ─── EDIT: Tampilkan form edit ──────────────────────────────────
     public function edit(Category $category): Response
     {
         return Inertia::render('Admin/Categories/Edit', [
@@ -56,11 +51,9 @@ class CategoryController extends Controller
         ]);
     }
 
-    // ─── UPDATE: Simpan perubahan ───────────────────────────────────
     public function update(Request $request, Category $category): RedirectResponse
     {
         $validated = $request->validate([
-            // unique kecualikan ID ini agar nama yang sama boleh disimpan
             'name'        => 'required|string|max:100|unique:categories,name,' . $category->id,
             'description' => 'nullable|string|max:500',
             'icon'        => 'nullable|string|max:10',
@@ -68,7 +61,6 @@ class CategoryController extends Controller
             'sort_order'  => 'nullable|integer|min:0',
         ]);
 
-        // slug diperbarui oleh booted()
         $category->update($validated);
 
         return redirect()
@@ -76,23 +68,12 @@ class CategoryController extends Controller
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    // ─── DESTROY: Hapus kategori ────────────────────────────────────
     public function destroy(Category $category): RedirectResponse
     {
-        // Cek apakah ada produk yang menggunakan kategori ini
-        if ($category->products()->count() > 0) {
-            return redirect()
-                ->route('admin.categories.index')
-                ->with(
-                    'error',
-                    'Kategori tidak bisa dihapus karena masih memiliki produk.'
-                );
-        }
-
         $category->delete();
 
         return redirect()
             ->route('admin.categories.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
-}   
+}
