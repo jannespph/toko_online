@@ -1,30 +1,29 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { useForm, Link, Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { useForm, Link, Head } from "@inertiajs/vue3";
+import { ref } from "vue";
+import { route } from "@/ziggy.js";
 
 const props = defineProps({
     product: Object,
-    categories: Array
+    categories: Array,
 });
 
 const form = useForm({
     name: props.product.name,
-    description: props.product.description || '',
+    description: props.product.description || "",
     price: props.product.price,
     stock: props.product.stock,
     status: props.product.status,
     image: null,
 
     // ID kategori yang sudah dipilih
-    category_ids: props.product.categories.map(c => c.id),
+    category_ids: props.product.categories.map((c) => c.id),
 });
 
 // Preview foto lama
 const previewUrl = ref(
-    props.product.image
-        ? '/storage/' + props.product.image
-        : null
+    props.product.image ? "/storage/" + props.product.image : null,
 );
 
 const onFileChange = (e) => {
@@ -34,13 +33,10 @@ const onFileChange = (e) => {
 
 // Submit update
 const submit = () =>
-    form.post(
-        route('seller.products.update', props.product.id),
-        {
-            forceFormData: true,
-            _method: 'put'
-        }
-    );
+    form.post(route("seller.products.update", props.product.id), {
+        forceFormData: true,
+        _method: "put",
+    });
 </script>
 
 <template>
@@ -48,10 +44,8 @@ const submit = () =>
         <Head title="Edit Produk" />
 
         <div class="max-w-3xl mx-auto px-4 py-8">
-
             <!-- Header -->
             <div class="flex items-center gap-3 mb-6">
-
                 <Link
                     :href="route('seller.products.index')"
                     class="text-gray-400 hover:text-gray-600"
@@ -60,32 +54,21 @@ const submit = () =>
                 </Link>
 
                 <div>
-                    <h1 class="text-2xl font-bold">
-                        Edit Produk
-                    </h1>
+                    <h1 class="text-2xl font-bold">Edit Produk</h1>
 
                     <p class="text-sm text-gray-500">
                         Slug:
                         {{ props.product.slug }}
                     </p>
                 </div>
-
             </div>
 
             <!-- Card -->
             <div class="card">
-
-                <form
-                    @submit.prevent="submit"
-                    class="space-y-6"
-                >
-
+                <form @submit.prevent="submit" class="space-y-6">
                     <!-- Nama Produk -->
                     <div>
-
-                        <label class="label">
-                            Nama Produk *
-                        </label>
+                        <label class="label"> Nama Produk * </label>
 
                         <input
                             v-model="form.name"
@@ -100,33 +83,24 @@ const submit = () =>
                         >
                             {{ form.errors.name }}
                         </p>
-
                     </div>
 
                     <!-- Deskripsi -->
                     <div>
-
-                        <label class="label">
-                            Deskripsi
-                        </label>
+                        <label class="label"> Deskripsi </label>
 
                         <textarea
                             v-model="form.description"
                             rows="4"
                             class="input"
                         />
-
                     </div>
 
                     <!-- Harga & Stok -->
                     <div class="grid grid-cols-2 gap-4">
-
                         <!-- Harga -->
                         <div>
-
-                            <label class="label">
-                                Harga (Rp) *
-                            </label>
+                            <label class="label"> Harga (Rp) * </label>
 
                             <input
                                 v-model.number="form.price"
@@ -142,15 +116,11 @@ const submit = () =>
                             >
                                 {{ form.errors.price }}
                             </p>
-
                         </div>
 
                         <!-- Stok -->
                         <div>
-
-                            <label class="label">
-                                Stok *
-                            </label>
+                            <label class="label"> Stok * </label>
 
                             <input
                                 v-model.number="form.stock"
@@ -158,46 +128,29 @@ const submit = () =>
                                 min="0"
                                 class="input"
                             />
-
                         </div>
-
                     </div>
 
                     <!-- Status -->
                     <div>
+                        <label class="label"> Status Produk </label>
 
-                        <label class="label">
-                            Status Produk
-                        </label>
-
-                        <select
-                            v-model="form.status"
-                            class="input"
-                        >
-                            <option value="draft">
-                                Draft (belum tampil)
-                            </option>
+                        <select v-model="form.status" class="input">
+                            <option value="draft">Draft (belum tampil)</option>
 
                             <option value="active">
                                 Aktif (tampil di katalog)
                             </option>
 
-                            <option value="inactive">
-                                Nonaktif
-                            </option>
+                            <option value="inactive">Nonaktif</option>
                         </select>
-
                     </div>
 
                     <!-- Upload Foto -->
                     <div>
-
-                        <label class="label">
-                            Foto Produk
-                        </label>
+                        <label class="label"> Foto Produk </label>
 
                         <div class="flex items-start gap-4">
-
                             <!-- Preview -->
                             <div
                                 v-if="previewUrl"
@@ -211,7 +164,6 @@ const submit = () =>
 
                             <!-- File Input -->
                             <div>
-
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -229,30 +181,24 @@ const submit = () =>
                                 >
                                     {{ form.errors.image }}
                                 </p>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- Multi Select Kategori -->
                     <div>
-
-                        <label class="label">
-                            Kategori
-                        </label>
+                        <label class="label"> Kategori </label>
 
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-
                             <label
                                 v-for="cat in categories"
                                 :key="cat.id"
                                 class="flex items-center gap-2 p-2 rounded-lg border cursor-pointer hover:bg-orange-50 transition-colors"
-                                :class="form.category_ids.includes(cat.id)
-                                    && 'border-orange-500 bg-orange-50'"
+                                :class="
+                                    form.category_ids.includes(cat.id) &&
+                                    'border-orange-500 bg-orange-50'
+                                "
                             >
-
                                 <input
                                     type="checkbox"
                                     :value="cat.id"
@@ -260,19 +206,13 @@ const submit = () =>
                                     class="text-orange-600"
                                 />
 
-                                <span>
-                                    {{ cat.icon }} {{ cat.name }}
-                                </span>
-
+                                <span> {{ cat.icon }} {{ cat.name }} </span>
                             </label>
-
                         </div>
-
                     </div>
 
                     <!-- Tombol -->
                     <div class="flex gap-3">
-
                         <button
                             type="submit"
                             :disabled="form.processing"
@@ -280,8 +220,8 @@ const submit = () =>
                         >
                             {{
                                 form.processing
-                                    ? 'Menyimpan...'
-                                    : 'Update Produk'
+                                    ? "Menyimpan..."
+                                    : "Update Produk"
                             }}
                         </button>
 
@@ -291,13 +231,9 @@ const submit = () =>
                         >
                             Batal
                         </Link>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
     </AppLayout>
 </template>

@@ -1,42 +1,43 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue'
-import { Link, Head, router } from '@inertiajs/vue3'
-import { ref, watch } from 'vue'
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { Link, Head, router } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
+import { route } from "@/ziggy.js";
 
 const props = defineProps({
     products: Object,
     categories: Array,
     filters: Object,
-})
+});
 
 // Inisialisasi filter dari URL
-const search = ref(props.filters.search || '')
-const category = ref(props.filters.category || '')
+const search = ref(props.filters.search || "");
+const category = ref(props.filters.category || "");
 
 // Kirim filter ke server
 const applyFilters = () => {
     router.get(
-        route('products.index'),
+        route("products.index"),
         {
             search: search.value || undefined,
             category: category.value || undefined,
         },
         {
             preserveState: true,
-        }
-    )
-}
+        },
+    );
+};
 
 // Auto apply saat kategori berubah
-watch(category, applyFilters)
+watch(category, applyFilters);
 
 // Format Rupiah
 const rupiah = (n) =>
-    new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
+    new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
         maximumFractionDigits: 0,
-    }).format(n)
+    }).format(n);
 </script>
 
 <template>
@@ -44,12 +45,9 @@ const rupiah = (n) =>
         <Head title="Katalog Produk" />
 
         <div class="max-w-7xl mx-auto px-4 py-8">
-
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="text-3xl font-bold">
-                    Katalog Produk
-                </h1>
+                <h1 class="text-3xl font-bold">Katalog Produk</h1>
 
                 <p class="text-gray-500 mt-1">
                     {{ products.total }} produk ditemukan
@@ -57,10 +55,7 @@ const rupiah = (n) =>
             </div>
 
             <!-- Search Bar -->
-            <form
-                @submit.prevent="applyFilters"
-                class="flex gap-2 mb-6"
-            >
+            <form @submit.prevent="applyFilters" class="flex gap-2 mb-6">
                 <input
                     v-model="search"
                     type="text"
@@ -68,17 +63,16 @@ const rupiah = (n) =>
                     placeholder="🔍 Cari produk..."
                 />
 
-                <button
-                    type="submit"
-                    class="btn-primary"
-                >
-                    Cari
-                </button>
+                <button type="submit" class="btn-primary">Cari</button>
 
                 <button
                     v-if="search || category"
                     type="button"
-                    @click="search = ''; category = ''; applyFilters()"
+                    @click="
+                        search = '';
+                        category = '';
+                        applyFilters();
+                    "
                     class="btn-secondary"
                 >
                     Reset
@@ -87,7 +81,6 @@ const rupiah = (n) =>
 
             <!-- Filter Kategori -->
             <div class="flex gap-2 flex-wrap mb-8">
-
                 <!-- Semua -->
                 <button
                     @click="category = ''"
@@ -148,28 +141,18 @@ const rupiah = (n) =>
                     </p>
 
                     <p class="text-xs text-gray-400 mt-1">
-                        Stok: {{ prod.stock }} ·
-                        {{ prod.reviews_count }} ulasan
+                        Stok: {{ prod.stock }} · {{ prod.reviews_count }} ulasan
                     </p>
                 </Link>
             </div>
 
             <!-- Empty State -->
-            <div
-                v-else
-                class="text-center py-20 text-gray-400"
-            >
-                <p class="text-5xl mb-4">
-                    😔
-                </p>
+            <div v-else class="text-center py-20 text-gray-400">
+                <p class="text-5xl mb-4">😔</p>
 
-                <p class="text-lg">
-                    Produk tidak ditemukan.
-                </p>
+                <p class="text-lg">Produk tidak ditemukan.</p>
 
-                <p class="text-sm">
-                    Coba ubah filter atau kata pencarian.
-                </p>
+                <p class="text-sm">Coba ubah filter atau kata pencarian.</p>
             </div>
 
             <!-- Pagination -->
@@ -184,15 +167,12 @@ const rupiah = (n) =>
                             ? 'bg-indigo-600 text-white border-indigo-600'
                             : 'bg-white text-gray-700',
 
-                        !link.url
-                            ? 'opacity-50 cursor-not-allowed'
-                            : '',
+                        !link.url ? 'opacity-50 cursor-not-allowed' : '',
 
                         'px-4 py-2 border rounded-lg text-sm transition-colors',
                     ]"
                 />
             </div>
-
         </div>
     </AppLayout>
 </template>

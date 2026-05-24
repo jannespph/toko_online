@@ -1,21 +1,22 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router, Head } from '@inertiajs/vue3';
+import AppLayout from "@/Layouts/AppLayout.vue";
+import { Link, router, Head } from "@inertiajs/vue3";
+import { route } from "@/ziggy.js";
 
 defineProps({
-    products: Object
+    products: Object,
 });
 
 const formatRupiah = (n) =>
-    new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0
+    new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
     }).format(n);
 
 const hapus = (id) => {
-    if (confirm('Hapus produk ini?')) {
-        router.delete(route('seller.products.destroy', id));
+    if (confirm("Hapus produk ini?")) {
+        router.delete(route("seller.products.destroy", id));
     }
 };
 </script>
@@ -25,12 +26,9 @@ const hapus = (id) => {
         <Head title="Produk Saya" />
 
         <div class="max-w-6xl mx-auto px-4 py-8">
-
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold">
-                    Produk Saya
-                </h1>
+                <h1 class="text-2xl font-bold">Produk Saya</h1>
 
                 <Link
                     :href="route('seller.products.create')"
@@ -43,28 +41,17 @@ const hapus = (id) => {
             <!-- Table -->
             <div class="card overflow-hidden">
                 <table class="w-full text-sm">
-
                     <thead class="bg-orange-600 text-white">
                         <tr>
-                            <th class="px-4 py-3 text-left">
-                                Produk
-                            </th>
+                            <th class="px-4 py-3 text-left">Produk</th>
 
-                            <th class="px-4 py-3 text-right">
-                                Harga
-                            </th>
+                            <th class="px-4 py-3 text-right">Harga</th>
 
-                            <th class="px-4 py-3 text-center">
-                                Stok
-                            </th>
+                            <th class="px-4 py-3 text-center">Stok</th>
 
-                            <th class="px-4 py-3 text-center">
-                                Status
-                            </th>
+                            <th class="px-4 py-3 text-center">Status</th>
 
-                            <th class="px-4 py-3 text-center">
-                                Aksi
-                            </th>
+                            <th class="px-4 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
 
@@ -74,15 +61,15 @@ const hapus = (id) => {
                             :key="product.id"
                             class="border-b hover:bg-gray-50"
                         >
-
                             <!-- Foto + Nama -->
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
-
                                     <img
-                                        :src="product.image
-                                            ? '/storage/' + product.image
-                                            : '/img/no-image.png'"
+                                        :src="
+                                            product.image
+                                                ? '/storage/' + product.image
+                                                : '/img/no-image.png'
+                                        "
                                         class="w-12 h-12 object-cover rounded-lg"
                                     />
 
@@ -95,7 +82,6 @@ const hapus = (id) => {
                                             {{ product.slug }}
                                         </p>
                                     </div>
-
                                 </div>
                             </td>
 
@@ -130,9 +116,13 @@ const hapus = (id) => {
 
                             <!-- Aksi -->
                             <td class="px-4 py-3 text-center space-x-2">
-
                                 <Link
-                                    :href="route('seller.products.edit', product.id)"
+                                    :href="
+                                        route(
+                                            'seller.products.edit',
+                                            product.id,
+                                        )
+                                    "
                                     class="text-blue-600 hover:underline text-xs"
                                 >
                                     Edit
@@ -144,18 +134,14 @@ const hapus = (id) => {
                                 >
                                     Hapus
                                 </button>
-
                             </td>
-
                         </tr>
                     </tbody>
-
                 </table>
             </div>
 
             <!-- Pagination -->
             <div class="mt-4 flex gap-2">
-
                 <Link
                     v-for="link in products.links"
                     :key="link.label"
@@ -166,12 +152,10 @@ const hapus = (id) => {
                             ? 'bg-orange-600 text-white'
                             : 'bg-white text-gray-700',
 
-                        'px-3 py-1 border rounded text-sm'
+                        'px-3 py-1 border rounded text-sm',
                     ]"
                 />
-
             </div>
-
         </div>
     </AppLayout>
 </template>
