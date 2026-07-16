@@ -1,12 +1,11 @@
+```vue
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { useForm, Link, Head } from "@inertiajs/vue3";
 import { ref } from "vue";
 import { route } from "@/ziggy.js";
 
-defineProps({
-    categories: Array,
-});
+defineProps({ categories: Array });
 
 const form = useForm({
     name: "",
@@ -14,8 +13,8 @@ const form = useForm({
     price: 0,
     stock: 0,
     status: "draft",
-    image: null,
-    category_ids: [],
+    image: null, // File object
+    category_ids: [], // Array ID kategori yang dipilih
 });
 
 // Preview foto sebelum upload
@@ -26,7 +25,7 @@ const onFileChange = (e) => {
     previewUrl.value = URL.createObjectURL(form.image);
 };
 
-// Submit form
+// WAJIB: forceFormData agar file foto ikut terkirim
 const submit = () =>
     form.post(route("seller.products.store"), {
         forceFormData: true,
@@ -38,7 +37,6 @@ const submit = () =>
         <Head title="Tambah Produk" />
 
         <div class="max-w-3xl mx-auto px-4 py-8">
-            <!-- Header -->
             <div class="flex items-center gap-3 mb-6">
                 <Link
                     :href="route('seller.products.index')"
@@ -50,12 +48,11 @@ const submit = () =>
                 <h1 class="text-2xl font-bold">Tambah Produk</h1>
             </div>
 
-            <!-- Card -->
             <div class="card">
                 <form @submit.prevent="submit" class="space-y-6">
                     <!-- Nama Produk -->
                     <div>
-                        <label class="label"> Nama Produk * </label>
+                        <label class="label">Nama Produk *</label>
 
                         <input
                             v-model="form.name"
@@ -74,7 +71,7 @@ const submit = () =>
 
                     <!-- Deskripsi -->
                     <div>
-                        <label class="label"> Deskripsi </label>
+                        <label class="label">Deskripsi</label>
 
                         <textarea
                             v-model="form.description"
@@ -85,9 +82,8 @@ const submit = () =>
 
                     <!-- Harga & Stok -->
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- Harga -->
                         <div>
-                            <label class="label"> Harga (Rp) * </label>
+                            <label class="label">Harga (Rp) *</label>
 
                             <input
                                 v-model.number="form.price"
@@ -105,9 +101,8 @@ const submit = () =>
                             </p>
                         </div>
 
-                        <!-- Stok -->
                         <div>
-                            <label class="label"> Stok * </label>
+                            <label class="label">Stok *</label>
 
                             <input
                                 v-model.number="form.stock"
@@ -120,25 +115,22 @@ const submit = () =>
 
                     <!-- Status -->
                     <div>
-                        <label class="label"> Status Produk </label>
+                        <label class="label">Status Produk</label>
 
                         <select v-model="form.status" class="input">
                             <option value="draft">Draft (belum tampil)</option>
-
                             <option value="active">
                                 Aktif (tampil di katalog)
                             </option>
-
                             <option value="inactive">Nonaktif</option>
                         </select>
                     </div>
 
                     <!-- Upload Foto -->
                     <div>
-                        <label class="label"> Foto Produk * </label>
+                        <label class="label">Foto Produk *</label>
 
                         <div class="flex items-start gap-4">
-                            <!-- Preview -->
                             <div
                                 v-if="previewUrl"
                                 class="w-32 h-32 rounded-xl overflow-hidden border"
@@ -149,7 +141,6 @@ const submit = () =>
                                 />
                             </div>
 
-                            <!-- Input File -->
                             <div>
                                 <input
                                     type="file"
@@ -172,9 +163,9 @@ const submit = () =>
                         </div>
                     </div>
 
-                    <!-- Multi Select Kategori -->
+                    <!-- Multi-select Kategori -->
                     <div>
-                        <label class="label"> Kategori </label>
+                        <label class="label">Kategori</label>
 
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <label

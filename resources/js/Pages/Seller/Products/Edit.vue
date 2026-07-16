@@ -1,6 +1,7 @@
+```vue
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { useForm, Link, Head } from "@inertiajs/vue3";
+import { Link, Head, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import { route } from "@/ziggy.js";
 
@@ -9,34 +10,30 @@ const props = defineProps({
     categories: Array,
 });
 
+const previewUrl = ref(null);
+
 const form = useForm({
-    name: props.product.name,
+    name: props.product.name || "",
     description: props.product.description || "",
-    price: props.product.price,
-    stock: props.product.stock,
-    status: props.product.status,
+    price: props.product.price || 0,
+    stock: props.product.stock || 0,
+    status: props.product.status || "draft",
     image: null,
-
-    // ID kategori yang sudah dipilih
-    category_ids: props.product.categories.map((c) => c.id),
+    category_ids: props.product.categories
+        ? props.product.categories.map((cat) => cat.id)
+        : [],
 });
-
-// Preview foto lama
-const previewUrl = ref(
-    props.product.image ? "/storage/" + props.product.image : null,
-);
 
 const onFileChange = (e) => {
     form.image = e.target.files[0];
     previewUrl.value = URL.createObjectURL(form.image);
 };
 
-// Submit update
-const submit = () =>
-    form.post(route("seller.products.update", props.product.id), {
+const submit = () => {
+    form.put(route("seller.products.update", props.product.id), {
         forceFormData: true,
-        _method: "put",
     });
+};
 </script>
 
 <template>
@@ -44,7 +41,6 @@ const submit = () =>
         <Head title="Edit Produk" />
 
         <div class="max-w-3xl mx-auto px-4 py-8">
-            <!-- Header -->
             <div class="flex items-center gap-3 mb-6">
                 <Link
                     :href="route('seller.products.index')"
@@ -55,20 +51,17 @@ const submit = () =>
 
                 <div>
                     <h1 class="text-2xl font-bold">Edit Produk</h1>
-
                     <p class="text-sm text-gray-500">
-                        Slug:
-                        {{ props.product.slug }}
+                        Slug saat ini: {{ product.slug }}
                     </p>
                 </div>
             </div>
 
-            <!-- Card -->
             <div class="card">
                 <form @submit.prevent="submit" class="space-y-6">
                     <!-- Nama Produk -->
                     <div>
-                        <label class="label"> Nama Produk * </label>
+                        <label class="label">Nama Produk *</label>
 
                         <input
                             v-model="form.name"
@@ -87,7 +80,7 @@ const submit = () =>
 
                     <!-- Deskripsi -->
                     <div>
-                        <label class="label"> Deskripsi </label>
+                        <label class="label">Deskripsi</label>
 
                         <textarea
                             v-model="form.description"
@@ -98,9 +91,8 @@ const submit = () =>
 
                     <!-- Harga & Stok -->
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- Harga -->
                         <div>
-                            <label class="label"> Harga (Rp) * </label>
+                            <label class="label">Harga (Rp) *</label>
 
                             <input
                                 v-model.number="form.price"
@@ -118,9 +110,8 @@ const submit = () =>
                             </p>
                         </div>
 
-                        <!-- Stok -->
                         <div>
-                            <label class="label"> Stok * </label>
+                            <label class="label">Stok *</label>
 
                             <input
                                 v-model.number="form.stock"
@@ -133,25 +124,22 @@ const submit = () =>
 
                     <!-- Status -->
                     <div>
-                        <label class="label"> Status Produk </label>
+                        <label class="label">Status Produk</label>
 
                         <select v-model="form.status" class="input">
                             <option value="draft">Draft (belum tampil)</option>
-
                             <option value="active">
                                 Aktif (tampil di katalog)
                             </option>
-
                             <option value="inactive">Nonaktif</option>
                         </select>
                     </div>
 
                     <!-- Upload Foto -->
                     <div>
-                        <label class="label"> Foto Produk </label>
+                        <label class="label">Foto Produk</label>
 
                         <div class="flex items-start gap-4">
-                            <!-- Preview -->
                             <div
                                 v-if="previewUrl"
                                 class="w-32 h-32 rounded-xl overflow-hidden border"
@@ -162,7 +150,6 @@ const submit = () =>
                                 />
                             </div>
 
-                            <!-- File Input -->
                             <div>
                                 <input
                                     type="file"
@@ -185,9 +172,9 @@ const submit = () =>
                         </div>
                     </div>
 
-                    <!-- Multi Select Kategori -->
+                    <!-- Multi-select Kategori -->
                     <div>
-                        <label class="label"> Kategori </label>
+                        <label class="label">Kategori</label>
 
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <label
